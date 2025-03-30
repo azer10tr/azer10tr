@@ -1,5 +1,7 @@
 import 'package:employee_attendance/screens/attendance_screen.dart';
 import 'package:employee_attendance/screens/calender_screen.dart';
+import 'package:employee_attendance/screens/chat_screen.dart';
+import 'package:employee_attendance/screens/leave_list_screen.dart';
 import 'package:employee_attendance/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,7 +19,9 @@ class _HomeScreenState extends State<HomeScreen> {
   List<IconData> navigationIcons =[
   FontAwesomeIcons.solidCalendarDays,
   FontAwesomeIcons.check,
-  FontAwesomeIcons.solidUser
+  FontAwesomeIcons.adversal,
+  FontAwesomeIcons.solidPaperPlane,
+  FontAwesomeIcons.airbnb
   ];
 
   int currentIndex=1;
@@ -29,7 +33,12 @@ class _HomeScreenState extends State<HomeScreen> {
         children:const [
           CalenderScreen(),
           AttendanceScreen(),
-          ProfileScreen()
+          EmployeeLeaveListScreen(),
+          ProfileScreen(),
+          ChatScreen(receiverId:'5da9f81e-f970-4299-99fe-b9e3a9e31357' )
+          
+          
+          
         ],
       ),
         bottomNavigationBar: Container(

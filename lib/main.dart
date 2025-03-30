@@ -1,6 +1,7 @@
 import 'package:employee_attendance/screens/splash_screen.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/auth_service.dart';
+import 'package:employee_attendance/services/chat_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AuthService()),
         ChangeNotifierProvider(create: (context) => DbService()),
         ChangeNotifierProvider(create: (context) => AttendanceService()),
-      ],
+        Provider<ChatService>(create: (_) => ChatService()),      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false ,
         title: 'Employee attendance',
@@ -38,7 +39,10 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: const SplashScreen(),
+        
       ),
+      
     );
+    
   }
 }

@@ -20,15 +20,13 @@ Future registerEmployee(String email, String password, BuildContext context) asy
       }
       final AuthResponse response=
       await  _supabase.auth.signUp(email:  email, password:  password);
-      if(response != null){
-        await _dbService.insertNewUser(email, response.user!.id);
-        setIsLoading = false;
-        Utils.showSnackBar("Successfully registered!", context, color: Colors.green);
-        await loginEmployee(email, password, context);
-        Navigator.pop(context);
-        
-        }
-        
+      await _dbService.insertNewUser(email, response.user!.id);
+      setIsLoading = false;
+      Utils.showSnackBar("Successfully registered!", context, color: Colors.green);
+      await loginEmployee(email, password, context);
+      Navigator.pop(context);
+      
+              
         
       
       
