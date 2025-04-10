@@ -33,9 +33,12 @@ class _HomeScreenState extends State<HomeScreen> {
         children:const [
           CalenderScreen(),
           AttendanceScreen(),
+          
           EmployeeLeaveListScreen(),
+          
+          ChatScreen(receiverId:'5da9f81e-f970-4299-99fe-b9e3a9e31357' ),
           ProfileScreen(),
-          ChatScreen(receiverId:'5da9f81e-f970-4299-99fe-b9e3a9e31357' )
+          
           
           
           

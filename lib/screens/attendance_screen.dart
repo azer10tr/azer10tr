@@ -67,61 +67,68 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 20,bottom: 32),
-              height: 150,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow:[
-                  BoxShadow(
-                    color:Colors.black26,
-                    blurRadius: 10,
-                    offset: Offset(2, 2)),
-                ],
-                borderRadius: BorderRadius.all(Radius.circular(20))),
-                child :Row(
-                  mainAxisAlignment:MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment:MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Chek In",
-                            style: TextStyle(fontSize: 20,color: Colors.black54),
-                            ),
-                          const SizedBox(
-                            width:80,
-                            child:Divider(),
-                            ),
-                          Text(
-                            attendanceService.attendanceModel?.checkIn ?? '--/--',
-                            style: const TextStyle(fontSize: 25),
-                            )
-                        ],
-                      )),
-                      Expanded(
-                      child: Column(
-                        mainAxisAlignment:MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Chek Out",
-                          style: TextStyle(fontSize: 20,color: Colors.black54),
-                          ),
-                          const SizedBox(
-                            width:80,
-                            child:Divider(),
-                            ),
-                          Text(
-                            attendanceService.attendanceModel?.checkOut ?? '--/--',
-                          style: const TextStyle(fontSize: 25),
-                          )
-                        ],
-                      )),
-                  ]),
+  margin: const EdgeInsets.only(top: 20, bottom: 32),
+  height: 150,
+  decoration: const BoxDecoration(
+    color: Colors.white,
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black26,
+        blurRadius: 10,
+        offset: Offset(2, 2),
+      ),
+    ],
+    borderRadius: BorderRadius.all(Radius.circular(20)),
+  ),
+  child: Consumer<AttendanceService>(builder: (context, attendanceService, _) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                "Check In",
+                style: TextStyle(fontSize: 20, color: Colors.black54),
               ),
+              const SizedBox(
+                width: 80,
+                child: Divider(),
+              ),
+              Text(
+                attendanceService.attendanceModel?.checkIn ?? '--/--',
+                style: const TextStyle(fontSize: 25),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                "Check Out",
+                style: TextStyle(fontSize: 20, color: Colors.black54),
+              ),
+              const SizedBox(
+                width: 80,
+                child: Divider(),
+              ),
+              Text(
+                attendanceService.attendanceModel?.checkOut ?? '--/--',
+                style: const TextStyle(fontSize: 25),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }),
+),
               Container(
                 alignment: Alignment.bottomLeft,
                 child: Text(

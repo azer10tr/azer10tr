@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AuthService()),
         ChangeNotifierProvider(create: (context) => DbService()),
         ChangeNotifierProvider(create: (context) => AttendanceService()),
-        Provider<ChatService>(create: (_) => ChatService()),      ],
+        ChangeNotifierProvider(create: (_) => ChatService()),      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false ,
         title: 'Employee attendance',

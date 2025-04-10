@@ -32,6 +32,13 @@ class _ChatScreenState extends State<ChatScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
@@ -65,7 +72,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         ElevatedButton(
                           onPressed: () => setState(() {}),
                           child: const Text('Réessayer'),
-                        )
+                        ),
                       ],
                     ),
                   );
@@ -112,6 +119,60 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
+// Définir la classe MessageInput dans le même fichier
+class MessageInput extends StatelessWidget {
+  final TextEditingController controller;
+  final String receiverId;
+  final VoidCallback onSend;
+
+  const MessageInput({
+    super.key,
+    required this.controller,
+    required this.receiverId,
+    required this.onSend,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: controller,
+              minLines: 1,
+              maxLines: 3,
+              decoration: InputDecoration(
+                hintText: 'Écrire un message...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              ),
+              onSubmitted: (value) {
+                if (value.trim().isNotEmpty) onSend();
+              },
+            ),
+          ),
+          const SizedBox(width: 8),
+          CircleAvatar(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            child: IconButton(
+              icon: const Icon(Icons.send, color: Colors.white),
+              tooltip: 'Envoyer',
+              onPressed: onSend,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Définir la classe ChatBubble dans le même fichier
 class ChatBubble extends StatelessWidget {
   final Message message;
 
@@ -150,56 +211,6 @@ class ChatBubble extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class MessageInput extends StatelessWidget {
-  final TextEditingController controller;
-  final String receiverId;
-  final VoidCallback onSend;
-
-  const MessageInput({
-    super.key,
-    required this.controller,
-    required this.receiverId,
-    required this.onSend,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: controller,
-              minLines: 1,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Écrire un message...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              ),
-              onSubmitted: (_) => onSend(),
-            ),
-          ),
-          const SizedBox(width: 8),
-          CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            child: IconButton(
-              icon: const Icon(Icons.send, color: Colors.white),
-              tooltip: 'Envoyer',
-              onPressed: onSend,
-            ),
-          ),
-        ],
       ),
     );
   }

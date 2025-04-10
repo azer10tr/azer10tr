@@ -1,4 +1,3 @@
-
 class Message {
   final String id;
   final String senderId;
@@ -21,9 +20,20 @@ class Message {
       id: data['id'] as String,
       senderId: data['sender_id'] as String,
       receiverId: data['receiver_id'] as String,
-      content: data['content'] as String,
-      timestamp: DateTime.parse(data['timestamp'] as String),
-      isRead: data['is_read'] as bool,
+      content: data['content'] ?? '',
+      timestamp: DateTime.parse(data['timestamp'] ?? DateTime.now().toIso8601String()),
+      isRead: data['is_read'] ?? false,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'sender_id': senderId,
+      'receiver_id': receiverId,
+      'content': content,
+      'timestamp': timestamp.toIso8601String(),
+      'is_read': isRead,
+    };
   }
 }

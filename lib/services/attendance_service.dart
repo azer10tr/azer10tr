@@ -12,7 +12,7 @@ class AttendanceService extends ChangeNotifier{
   String todayDate = DateFormat("dd MMMM yyyy").format(DateTime.now());
 
   bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  bool get isLoading => _isLoading  ;
   set setIsLoading (bool value) {
     _isLoading = value;
     notifyListeners();
@@ -31,43 +31,48 @@ Future getTodayAttendance() async {
   final List result = await _supabase
   .from(Constants.attendanceTable)
   .select()
-  .eq("employee_id",_supabase.auth.currentUser!.id).eq("date", todayDate);
+  .eq("employee_id",_supabase.auth.currentUser!.id)
+  .eq("date", todayDate);
   if(result.isNotEmpty){
     attendanceModel = AttendanceModel.fromJson(result.first);
+  }
+  else {
+    attendanceModel = null;
   }
   notifyListeners();
 }
 
 Future markAttendance(BuildContext context) async {
-  Map? getLocation =
-  await LocationService().initializedAndGetLocation(context);
-  if(getLocation != null){
-      if(attendanceModel?.checkIn == null){
-    await _supabase.from(Constants.attendanceTable).insert({
-      'employee_id':_supabase.auth.currentUser!.id,
-      'date': todayDate,
-      'check_in':DateFormat('HH:mm').format(DateTime.now()),
-      'check_in_location':getLocation,
-    });
-  } else if (attendanceModel?.checkOut == null){
-    await _supabase
-    .from(Constants.attendanceTable)
-    .update({
-      'check_out':DateFormat('hh:mm').format(DateTime.now()),
-      'check_out_location':getLocation,
-    })
-    .eq('employee_id', _supabase.auth.currentUser!.id)
-    .eq('date',todayDate);
-  } else {
-    Utils.showSnackBar("You have already checked out today !",context);
-  }
-  getTodayAttendance();
-} else {
-    Utils.showSnackBar("Not able to get your Location", context,color: Colors.red);
-    getTodayAttendance();
-  }
+  Map? getLocation = await LocationService().initializedAndGetLocation(context);
 
-  
+  if (getLocation != null) {
+    // Vérifie l'état actuel avant toute insertion ou update
+    await getTodayAttendance();
+
+    if (attendanceModel == null) {
+      // Aucune ligne pour aujourd'hui → insère une nouvelle
+      await _supabase.from(Constants.attendanceTable).insert({
+        'employee_id': _supabase.auth.currentUser!.id,
+        'date': todayDate,
+        'check_in': DateFormat('HH:mm').format(DateTime.now()),
+        'check_in_location': getLocation,
+      });
+    } else if (attendanceModel?.checkOut == null) {
+      // Il existe une ligne avec check-in mais pas encore check-out
+      await _supabase.from(Constants.attendanceTable).update({
+        'check_out': DateFormat('HH:mm').format(DateTime.now()),
+        'check_out_location': getLocation,
+      })
+      .eq('employee_id', _supabase.auth.currentUser!.id)
+      .eq('date', todayDate);
+    } else {
+      Utils.showSnackBar("Vous avez déjà marqué votre check-out aujourd'hui.", context);
+    }
+
+    await getTodayAttendance();
+  } else {
+    Utils.showSnackBar("Localisation non disponible.", context, color: Colors.red);
+  }
 }
 
 Future<List<AttendanceModel>> getAttendanceHistory() async{

@@ -22,15 +22,30 @@ class DbService extends ChangeNotifier {
     .join();
     return randomString;
     }
-    Future insertNewUser(String email, var id) async {
-      await _supabase.from(Constants.employeeTable).insert({
-        'id': id,
-        'name':'',
-        'email': email,
-        'employee_id': generateRandomEmployeeId(),
-        'department': null,
-        });
-        }
+    Future<void> insertNewUser(String email, String userId) async {
+  // Vérifie que l'utilisateur existe bien dans Supabase Auth
+  final response = await _supabase
+      .from('Employees') // Nom de ta table liée à `auth.users`
+      .select('id')
+      .eq('id', userId)
+      .maybeSingle();
+
+  if (response != null) {
+    // L'utilisateur est déjà présent dans la table employees
+    return;
+  }
+
+  // Insertion dans la table Employees
+  await _supabase.from(Constants.employeeTable).insert({
+    'id': userId, // clé étrangère liée à auth.users.id
+    'email': email,
+    'name': '',
+    'employee_id': generateRandomEmployeeId(),
+    'department': null,
+  });
+}
+
+
         Future<UserModel> getUserData() async{
           final userData = await _supabase
           .from(Constants.employeeTable)
