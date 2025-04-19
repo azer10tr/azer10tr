@@ -3,17 +3,17 @@ import 'package:get/get.dart';
 import '../../../../dummy/index.dart';
 import '../../../../models/bottom_navigation_model.dart';
 import '../../../attendance_screen.dart';
-import '../../../calender_screen.dart';
 import '../../../leave_list_screen.dart';
-import '../../../profile_screen.dart';
+import '../../employee/employee_screen.dart';
+import '../../initial/initial_screen.dart';
 
 class HomeAdminController extends GetxController {
   int _currentPage = 0;
   final List<Widget> _pages = const [
-    CalenderScreen(),
+    InitialScreen(),
+    EmployeeScreen(),
     AttendanceScreen(),
     EmployeeLeaveListScreen(),
-    ProfileScreen(),
   ];
   final List<BottomNavigationModel> _bottomNavigations = bottomNavigationData;
 
