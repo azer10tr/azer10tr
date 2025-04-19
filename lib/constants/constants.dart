@@ -12,4 +12,5 @@ class Constants {
   // Keys
   static String supbaseUrl = dotenv.get('SUPABASE_URL');
   static String supbaseKey = dotenv.get('SUPABASE_KEY');
+  static String isAdminKey = dotenv.get('IS_ADMIN_KEY');
 }

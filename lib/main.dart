@@ -12,12 +12,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:toastification/toastification.dart';
 
 import 'constants/constants.dart';
+import 'core/service/cahce_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   await initializeDateFormatting('fr_FR', null);
-
+  await initialServices();
   // Initialiser Supabase
   await Supabase.initialize(
       url: Constants.supbaseUrl, anonKey: Constants.supbaseKey);
