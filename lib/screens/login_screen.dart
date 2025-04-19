@@ -2,6 +2,7 @@ import 'package:employee_attendance/screens/register_screen.dart';
 import "package:employee_attendance/services/auth_service.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -12,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
+
   get coBorderRadius => null;
   @override
   Widget build(BuildContext context) {
@@ -20,17 +21,15 @@ class _LoginScreenState extends State<LoginScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body:Column(
+      body: Column(
         children: [
           Container(
-            height: screenHeight/3,
+            height: screenHeight / 3,
             width: screenWidh,
             decoration: const BoxDecoration(
-              color: Colors.redAccent,
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(70)
-              )
-            ),
+                color: Colors.redAccent,
+                borderRadius:
+                    BorderRadius.only(bottomRight: Radius.circular(70))),
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -39,13 +38,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Colors.white,
                   size: 80,
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Text(
                   "VTL Groupe",
                   style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+                      fontSize: 25,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 )
               ],
             ),
@@ -59,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 TextField(
                   decoration: const InputDecoration(
-                    label: Text("Employee Email ID"), 
+                    label: Text("Employee Email ID"),
                     prefixIcon: Icon(Icons.person),
                     border: OutlineInputBorder(),
                   ), // InputDecoration
@@ -67,10 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ), // TextField
                 const SizedBox(
                   height: 20,
-                  ), // SizedBox
+                ), // SizedBox
 
-
-                  TextField(
+                TextField(
                   decoration: const InputDecoration(
                     label: Text("Password"),
                     prefixIcon: Icon(Icons.lock),
@@ -81,46 +81,50 @@ class _LoginScreenState extends State<LoginScreen> {
                 ), // TextField
                 const SizedBox(
                   height: 30,
-                  ), // SizedBox
+                ), // SizedBox
                 Consumer<AuthService>(
-                  builder: (context,authServiceProvider,child){
-                    return  SizedBox(
-                    height: 60,
-                    width: double.infinity,
-                    child: authServiceProvider.isLoading ? const Center(
-                      child: CircularProgressIndicator(),
-                    ): ElevatedButton(
-                      onPressed: (){
-                        authServiceProvider.loginEmployee(
-                          _emailController.text.trim(),
-                          _passwordController.text.trim(),
-                          context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                        shape:RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)
-                    )
-                    ), child: const Text("LOGIN",style: TextStyle(fontSize: 20,color: Colors.white),),),
+                  builder: (context, authServiceProvider, child) {
+                    return SizedBox(
+                      height: 60,
+                      width: double.infinity,
+                      child: authServiceProvider.isLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : ElevatedButton(
+                              onPressed: () {
+                                authServiceProvider.loginEmployee(
+                                    _emailController.text.trim(),
+                                    _passwordController.text.trim(),
+                                    context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.redAccent,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30))),
+                              child: const Text(
+                                "LOGIN",
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
+                              ),
+                            ),
                     );
                   },
-                  
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 TextButton(
-                  onPressed:() {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RegisterScreen()));
-                  },
-                  child: const Text("Are you a new employee ? Register here")
-                )
-                ],
-              ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterScreen()));
+                    },
+                    child: const Text("Are you a new employee ? Register here"))
+              ],
             ),
+          ),
         ],
       ),
     );

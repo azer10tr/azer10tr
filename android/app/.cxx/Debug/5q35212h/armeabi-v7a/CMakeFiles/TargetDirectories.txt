@@ -1,0 +1,2 @@
+C:/Users/SBS/Downloads/azer10tr/android/app/.cxx/Debug/5q35212h/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/SBS/Downloads/azer10tr/android/app/.cxx/Debug/5q35212h/armeabi-v7a/CMakeFiles/rebuild_cache.dir

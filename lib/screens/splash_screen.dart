@@ -10,11 +10,9 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
-    
-  
 
     return authService.currentUser == null
-    ? const LoginScreen()
-    : const HomeScreen();
+        ? const LoginScreen()
+        : const HomeScreen();
   }
 }

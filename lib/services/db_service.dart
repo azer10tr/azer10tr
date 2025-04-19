@@ -11,103 +11,96 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class DbService extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
   UserModel? userModel;
-  List<DepartmentModel> allDepartments =[];
+  List<DepartmentModel> allDepartments = [];
   int? employeeDepartment;
 
   String generateRandomEmployeeId() {
-    final random= Random();
+    final random = Random();
     const allChars = "STE Tunisienne de Vetements , de Travail Et de Loisirs";
     final randomString =
-    List.generate(8, (index) => allChars[random.nextInt(allChars.length)])
-    .join();
+        List.generate(8, (index) => allChars[random.nextInt(allChars.length)])
+            .join();
     return randomString;
-    }
-    Future<void> insertNewUser(String email, String userId) async {
-  // Vérifie que l'utilisateur existe bien dans Supabase Auth
-  final response = await _supabase
-      .from('Employees') // Nom de ta table liée à `auth.users`
-      .select('id')
-      .eq('id', userId)
-      .maybeSingle();
-
-  if (response != null) {
-    // L'utilisateur est déjà présent dans la table employees
-    return;
   }
 
-  // Insertion dans la table Employees
-  await _supabase.from(Constants.employeeTable).insert({
-    'id': userId, // clé étrangère liée à auth.users.id
-    'email': email,
-    'name': '',
-    'employee_id': generateRandomEmployeeId(),
-    'department': null,
-  });
-}
+  Future insertNewUser(String email, var id) async {
+    await _supabase.from(Constants.employeeTable).insert({
+      'id': id,
+      'name': '',
+      'email': email,
+      'employee_id': generateRandomEmployeeId(),
+      'department': null,
+    });
+  }
 
+  Future<UserModel> getUserData() async {
+    final userData = await _supabase
+        .from(Constants.employeeTable)
+        .select()
+        .eq('id', _supabase.auth.currentUser!.id)
+        .single();
+    userModel = UserModel.fromJson(userData);
+    // since this function can be called multiple times, then it will reset the department value
+    //that is why we are using condition to assign only at the first time
+    employeeDepartment == null
+        ? employeeDepartment = userModel?.department
+        : null;
+    return userModel!;
+  }
 
-        Future<UserModel> getUserData() async{
-          final userData = await _supabase
-          .from(Constants.employeeTable)
-          .select()
-          .eq('id', _supabase.auth.currentUser!.id)
-          .single();
-          userModel= UserModel.fromJson(userData);
-          // since this function can be called multiple times, then it will reset the department value
-          //that is why we are using condition to assign only at the first time
-          employeeDepartment == null
-          ? employeeDepartment = userModel?.department
-          : null;
-          return userModel!;
-        }
+  Future<void> getAllDepartments() async {
+    final List result =
+        await _supabase.from(Constants.departmentTable).select();
+    allDepartments = result
+        .map((department) => DepartmentModel.fromJson(department))
+        .toList();
+    notifyListeners();
+  }
 
-        Future<void> getAllDepartments() async {
-          final List result =
-          await _supabase.from(Constants.departmentTable).select();
-          allDepartments = result.map((department) => DepartmentModel.fromJson(department)).toList();
-        notifyListeners();
-        }
-        Future updateProfile(String name,BuildContext context) async{
-          await _supabase.from(Constants.employeeTable).update({
-            'name':name,
-            'department':employeeDepartment,
-          }).eq('id', _supabase.auth.currentUser!.id);
-          Utils.showSnackBar("Profile Update Successfully",context,color:Colors.green);
-          notifyListeners();
-        }
+  Future updateProfile(String name, BuildContext context) async {
+    await _supabase.from(Constants.employeeTable).update({
+      'name': name,
+      'department': employeeDepartment,
+    }).eq('id', _supabase.auth.currentUser!.id);
+    Utils.showSnackBar("Profile Update Successfully", context,
+        color: Colors.green);
+    notifyListeners();
+  }
 
+  Future<void> submitLeaveRequest({
+    required DateTime startDate,
+    required DateTime endDate,
+    required String type,
+    String? comments,
+    required BuildContext context,
+  }) async {
+    try {
+      await _supabase.from('leave_requests').insert({
+        'employee_id': _supabase.auth.currentUser!.id,
+        'start_date': startDate.toIso8601String(),
+        'end_date': endDate.toIso8601String(),
+        'type': type,
+        'comments': comments,
+      });
+      Utils.showSnackBar("Demande envoyée !", context, color: Colors.green);
+      notifyListeners();
+    } catch (e) {
+      Utils.showSnackBar("Erreur : ${e.toString()}", context,
+          color: Colors.red);
+    }
+  }
 
-        Future<void> submitLeaveRequest({
-          required DateTime startDate,
-          required DateTime endDate,
-          required String type,
-          String? comments,
-          required BuildContext context,
-          }) async {
-            try {
-              await _supabase.from('leave_requests').insert({
-                'employee_id': _supabase.auth.currentUser!.id,
-                'start_date': startDate.toIso8601String(),
-                'end_date': endDate.toIso8601String(),
-                'type': type,
-                'comments': comments,
-                });
-                Utils.showSnackBar("Demande envoyée !", context, color: Colors.green);
-                notifyListeners();
-                } catch (e) {
-                  Utils.showSnackBar("Erreur : ${e.toString()}", context, color: Colors.red);
-                  }
-                  }
-        Future<List<LeaveRequest>> getEmployeeLeaveRequests() async {
+  Future<List<LeaveRequest>> getEmployeeLeaveRequests(
+      {required String status}) async {
     final data = await _supabase
         .from('leave_requests')
         .select()
         .eq('employee_id', _supabase.auth.currentUser!.id)
+        .eq("status", status)
         .order('created_at', ascending: false);
 
     return data.map((lr) => LeaveRequest.fromJson(lr)).toList();
   }
-
 
 // Récupérer toutes les demandes (pour admin)
   Future<List<LeaveRequest>> getAllLeaveRequests() async {
@@ -123,12 +116,7 @@ class DbService extends ChangeNotifier {
   Future<void> updateLeaveStatus(String requestId, String newStatus) async {
     await _supabase
         .from('leave_requests')
-        .update({'status': newStatus})
-        .eq('id', requestId);
+        .update({'status': newStatus}).eq('id', requestId);
     notifyListeners();
   }
-
-
-
-
-        }
+}

@@ -1,6 +1,7 @@
 import 'package:employee_attendance/services/auth_service.dart';
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -11,7 +12,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
+
   get coBorderRadius => null;
   @override
   Widget build(BuildContext context) {
@@ -23,17 +24,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         elevation: 0,
       ),
       resizeToAvoidBottomInset: false,
-      body:Column(
+      body: Column(
         children: [
           Container(
-            height: screenHeight/4,
+            height: screenHeight / 4,
             width: screenWidh,
             decoration: const BoxDecoration(
-              color: Colors.redAccent,
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(70)
-              )
-            ),
+                color: Colors.redAccent,
+                borderRadius:
+                    BorderRadius.only(bottomRight: Radius.circular(70))),
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -42,13 +41,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   color: Colors.white,
                   size: 80,
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Text(
                   "VTL Groupe",
                   style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+                      fontSize: 25,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 )
               ],
             ),
@@ -70,10 +71,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ), // TextField
                 const SizedBox(
                   height: 20,
-                  ), // SizedBox
+                ), // SizedBox
 
-
-                  TextField(
+                TextField(
                   decoration: const InputDecoration(
                     label: Text("Password"),
                     prefixIcon: Icon(Icons.lock),
@@ -84,33 +84,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ), // TextField
                 const SizedBox(
                   height: 30,
-                  ), // SizedBox
+                ), // SizedBox
                 Consumer<AuthService>(
-                  builder: (context,authServiceProvider,child){
-                    return  SizedBox(
-                    height: 60,
-                    width: double.infinity,
-                    child: authServiceProvider.isLoading ? const Center(
-                      child: CircularProgressIndicator(),
-                    ): ElevatedButton(
-                      onPressed: (){
-                      authServiceProvider.registerEmployee(
-                        _emailController.text.trim(),
-                        _passwordController.text.trim(),
-                        context) ;
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                        shape:RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)
-                    )
-                    ), child: const Text("REGISTER",style: TextStyle(fontSize: 20,color: Colors.white),),),
-                  );
+                  builder: (context, authServiceProvider, child) {
+                    return SizedBox(
+                      height: 60,
+                      width: double.infinity,
+                      child: authServiceProvider.isLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : ElevatedButton(
+                              onPressed: () {
+                                authServiceProvider.registerEmployee(
+                                    _emailController.text.trim(),
+                                    _passwordController.text.trim(),
+                                    context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.redAccent,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30))),
+                              child: const Text(
+                                "REGISTER",
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
+                              ),
+                            ),
+                    );
                   },
                 ),
-                ],
-              ),
+              ],
             ),
+          ),
         ],
       ),
     );
