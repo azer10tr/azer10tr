@@ -5,6 +5,7 @@ import '../../../../models/bottom_navigation_model.dart';
 import '../../../leave_list_screen.dart';
 import '../../employee/employee_screen.dart';
 import '../../initial/initial_screen.dart';
+import '../../settings/settings_screen.dart';
 
 class HomeAdminController extends GetxController {
   int _currentPage = 0;
@@ -12,7 +13,7 @@ class HomeAdminController extends GetxController {
     InitialScreen(),
     EmployeeScreen(),
     EmployeeLeaveListScreen(),
-    EmployeeLeaveListScreen(),
+    SettingsScreen(),
   ];
   final List<BottomNavigationModel> _bottomNavigations = bottomNavigationData;
 
