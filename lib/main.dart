@@ -19,6 +19,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await initializeDateFormatting('fr_FR', null);
   await initialServices();
+
   // Initialiser Supabase
   await Supabase.initialize(
       url: Constants.supbaseUrl, anonKey: Constants.supbaseKey);

@@ -1,5 +1,4 @@
 import 'package:employee_attendance/constants/app_cache.dart';
-import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/core/functions/show_tosat.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/material.dart';
@@ -43,10 +42,9 @@ class AuthService extends ChangeNotifier {
       if (email == "" || password == "") {
         throw ("All Fields are required");
       }
-      final AuthResponse response = await _supabase.auth
-          .signInWithPassword(email: email, password: password);
-      await _dbService.insertNewUser(email, response.user!.id);
-      if (Constants.isAdminKey == email) {
+      await _supabase.auth.signInWithPassword(email: email, password: password);
+      bool isAdmin = await _dbService.getUserRoleData();
+      if (isAdmin) {
         AppCache().setIsAdmin(true);
       }
       setIsLoading = false;
@@ -58,6 +56,7 @@ class AuthService extends ChangeNotifier {
 
   Future signOut() async {
     await _supabase.auth.signOut();
+    AppCache().clearAllCache();
     notifyListeners();
   }
 

@@ -48,6 +48,16 @@ class DbService extends ChangeNotifier {
     return userModel!;
   }
 
+  Future<bool> getUserRoleData() async {
+    final userData = await _supabase
+        .from(Constants.employeeTable)
+        .select()
+        .eq('id', _supabase.auth.currentUser!.id)
+        .single();
+    userModel = UserModel.fromJson(userData);
+    return userModel!.role == "admin" ? true : false;
+  }
+
   Future<void> getAllDepartments() async {
     final List result =
         await _supabase.from(Constants.departmentTable).select();
