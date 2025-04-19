@@ -2,6 +2,8 @@
 class AppImage {
   AppImage._();
   
+  static const String imagesIconesBusinessManEmployee = "assets/images/icones/business-man-employee.svg";
+
   static const String imagesIconesClipboard = "assets/images/icones/clipboard.svg";
 
   static const String imagesIconesHome = "assets/images/icones/home.svg";

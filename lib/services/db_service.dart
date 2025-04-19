@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/models/department_model.dart';
+import 'package:employee_attendance/models/employee_model.dart';
 import 'package:employee_attendance/models/leave_request_model.dart';
 import 'package:employee_attendance/models/user_models.dart';
 import 'package:employee_attendance/utils/utils.dart';
@@ -128,5 +129,19 @@ class DbService extends ChangeNotifier {
         .from('leave_requests')
         .update({'status': newStatus}).eq('id', requestId);
     notifyListeners();
+  }
+
+  Future<List<EmployeeModel>> getEmployeesData() async {
+    final employees = await _supabase
+        .from('Employees')
+        .select('''*, departments:department(title)''').order('created_at',
+            ascending: false);
+
+    return employees
+        .map((employee) => EmployeeModel.fromJson({
+              ...employee,
+              'department_name': employee['departments']?['title'],
+            }))
+        .toList();
   }
 }
