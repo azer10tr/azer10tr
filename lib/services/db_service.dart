@@ -131,13 +131,32 @@ class DbService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<EmployeeModel>> getEmployeesData() async {
-    final employees = await _supabase
-        .from('Employees')
-        .select('''*, departments:department(title)''').order('created_at',
-            ascending: false);
+  Future<List<EmployeeModel>> getEmployeesData({
+    int page = 0,
+    int perPage = 10,
+    String searchQuery = '',
+  }) async {
+    final from = page * perPage;
+    final to = from + perPage - 1;
+    PostgrestTransformBuilder<PostgrestList> query;
+    if (searchQuery.isEmpty) {
+      query = _supabase
+          .from('Employees')
+          .select('*, departments:department(title)')
+          .order('created_at', ascending: false)
+          .range(from, to);
+    } else {
+      query = _supabase
+          .from('Employees')
+          .select('*, departments:department(title)')
+          .ilike("name", "%$searchQuery%")
+          .order('created_at', ascending: false)
+          .range(from, to);
+    }
 
-    return employees
+    final response = await query;
+
+    return (response as List)
         .map((employee) => EmployeeModel.fromJson({
               ...employee,
               'department_name': employee['departments']?['title'],
