@@ -1,7 +1,11 @@
+import 'package:employee_attendance/constants/app_cache.dart';
+import 'package:employee_attendance/constants/app_color.dart';
+import 'package:employee_attendance/constants/app_image.dart';
 import 'package:employee_attendance/models/leave_request_model.dart';
 import 'package:employee_attendance/screens/leave_request_screen.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../core/enums/date_enum.dart';
@@ -53,6 +57,8 @@ class _EmployeeLeaveListScreenState extends State<EmployeeLeaveListScreen>
         bottom: TabBar(
           controller: _tabController,
           tabs: _statusTabs.map((status) => Tab(text: status)).toList(),
+          indicatorColor: AppColor.primary,
+          labelColor: AppColor.primary,
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -91,7 +97,7 @@ class _EmployeeLeaveListScreenState extends State<EmployeeLeaveListScreen>
             return Container(
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColor.white,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.grey.shade300),
               ),
@@ -101,8 +107,13 @@ class _EmployeeLeaveListScreenState extends State<EmployeeLeaveListScreen>
                   CircleAvatar(
                     backgroundColor: _getStatusColor(request.status),
                     radius: 25,
-                    child: const Icon(Icons.contact_page,
-                        size: 25, color: Colors.white),
+                    child: SvgPicture.asset(
+                      AppImage.imagesIconesClipboard,
+                      width: 25,
+                      height: 25,
+                      colorFilter: const ColorFilter.mode(
+                          AppColor.white, BlendMode.srcIn),
+                    ),
                   ),
                   const SizedBox(width: 15),
                   Expanded(
@@ -123,6 +134,61 @@ class _EmployeeLeaveListScreenState extends State<EmployeeLeaveListScreen>
                         Text(
                           "Du ${formatDate(inputDate: request.startDate.toString(), formatType: DateFormatType.long)} au ${formatDate(inputDate: request.endDate.toString(), formatType: DateFormatType.long)}",
                         ),
+                        request.status == "en_attente"
+                            ? AppCache().isAdmin()
+                                ? Container(
+                                    margin: const EdgeInsets.only(top: 7),
+                                    child: Row(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () => {
+                                            Provider.of<DbService>(context,
+                                                    listen: false)
+                                                .updateLeaveStatus(
+                                                    request.id, "approuve")
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: AppColor.green700,
+                                            foregroundColor: AppColor.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            "Approuver",
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        ElevatedButton(
+                                          onPressed: () => {
+                                            Provider.of<DbService>(context,
+                                                    listen: false)
+                                                .updateLeaveStatus(
+                                                    request.id, "rejete")
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: AppColor.red700,
+                                            foregroundColor: AppColor.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            "Approuver",
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                      ],
+                                    ))
+                                : const SizedBox()
+                            : const SizedBox()
                       ],
                     ),
                   ),

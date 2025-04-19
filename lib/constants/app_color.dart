@@ -13,4 +13,10 @@ class AppColor {
 
   // Grey
   static const Color grey = Color(0xFF808080);
+
+  // Green
+  static Color green700 = Colors.green.shade700;
+
+  // Red
+  static Color red700 = Colors.red.shade700;
 }

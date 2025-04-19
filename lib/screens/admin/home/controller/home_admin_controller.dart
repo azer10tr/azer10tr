@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../dummy/index.dart';
 import '../../../../models/bottom_navigation_model.dart';
-import '../../../attendance_screen.dart';
 import '../../../leave_list_screen.dart';
 import '../../employee/employee_screen.dart';
 import '../../initial/initial_screen.dart';
@@ -12,7 +11,7 @@ class HomeAdminController extends GetxController {
   final List<Widget> _pages = const [
     InitialScreen(),
     EmployeeScreen(),
-    AttendanceScreen(),
+    EmployeeLeaveListScreen(),
     EmployeeLeaveListScreen(),
   ];
   final List<BottomNavigationModel> _bottomNavigations = bottomNavigationData;

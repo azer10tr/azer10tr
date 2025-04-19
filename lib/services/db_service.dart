@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:employee_attendance/constants/app_cache.dart';
 import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/models/employee_model.dart';
@@ -103,12 +103,22 @@ class DbService extends ChangeNotifier {
 
   Future<List<LeaveRequest>> getEmployeeLeaveRequests(
       {required String status}) async {
-    final data = await _supabase
-        .from('leave_requests')
-        .select()
-        .eq('employee_id', _supabase.auth.currentUser!.id)
-        .eq("status", status)
-        .order('created_at', ascending: false);
+    final PostgrestList data;
+
+    if (AppCache().isAdmin()) {
+      data = await _supabase
+          .from('leave_requests')
+          .select()
+          .eq("status", status)
+          .order('created_at', ascending: false);
+    } else {
+      data = await _supabase
+          .from('leave_requests')
+          .select()
+          .eq('employee_id', _supabase.auth.currentUser!.id)
+          .eq("status", status)
+          .order('created_at', ascending: false);
+    }
 
     return data.map((lr) => LeaveRequest.fromJson(lr)).toList();
   }
